@@ -390,6 +390,16 @@ function render(m,t,deck,health,plan,nextsteps){
     ["In DFCX design",t.p2.dfcx,"","grey","In Progress"]
   ].filter(x=>Number(x[1])>0)
    .map(x=>[x[0],x[1]+" flow"+(x[1]==1?"":"s"),t.totals.p2?Math.round(x[1]/t.totals.p2*100):0,x[2],x[3],x[4]]);
+  // Canonical lifecycle order for stage rows within each phase card
+  const stageRank=lbl=>{const s=String(lbl).toLowerCase();
+    if(s.includes("uat"))return 4;                                   // UAT / Pending UAT / UAT in SIT
+    if(s.includes("sit"))return 1;                                   // SIT build / testing
+    if(s.includes("dfcx"))return 2;                                  // DFCX design
+    if(s.includes("outbound dialer")||s.includes("in review"))return 3;  // review
+    if(s.includes("approved"))return 5;                             // approved for production build
+    if(s.includes("prod build")||s.includes("production build"))return 6; // production build complete
+    if(s.includes("ort"))return 7;                                  // ORT
+    return 8;};
   const cf=[
     {ph:"Phase 1",flows:t.totals.p1,gl:"Go Live Jul 28",stg:[
       ["SIT Build & Config",t.totals.p1+" / "+t.totals.p1,100,"g","done","Complete"],
@@ -405,7 +415,7 @@ function render(m,t,deck,health,plan,nextsteps){
     ]}
   ];
   document.getElementById("cf").innerHTML=cf.map(c=>`<div class="card c"><div class="ph1">${c.ph} · ${c.flows} flows</div><div class="gl">${c.gl}</div>
-    ${c.stg.map(s=>`<div class="stg"><div class="top"><span class="sl">${s[0]}</span><span class="sv ${s[3]}">${s[1]}</span></div><div class="bar"><i class="${s[3]}" style="width:${s[2]}%"></i></div><span class="chip ${s[4]}">${s[5]}</span></div>`).join("")}</div>`).join("");
+    ${c.stg.slice().sort((a,b)=>stageRank(a[0])-stageRank(b[0])).map(s=>`<div class="stg"><div class="top"><span class="sl">${s[0]}</span><span class="sv ${s[3]}">${s[1]}</span></div><div class="bar"><i class="${s[3]}" style="width:${s[2]}%"></i></div><span class="chip ${s[4]}">${s[5]}</span></div>`).join("")}</div>`).join("");
 
   // gantt (dates from plan)
   const flowsBy={1:t.totals.p1,2:t.totals.p2,3:t.totals.p3};
