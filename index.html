@@ -110,9 +110,11 @@
   .raidtbl td{padding:13px 14px;border-bottom:1px solid #F0F2F6;vertical-align:top;font-size:12.5px}
   .raidtbl tr:last-child td{border-bottom:none}
   .raidtbl td.typ{width:82px}
-  .raidtbl td.desc{font-weight:700;color:var(--navy2);width:29%;line-height:1.4}
+  .raidtbl td.desc{font-weight:700;color:var(--navy2);width:26%;line-height:1.4}
+  .raidtbl td.ownc{width:120px;color:#3A4152;font-weight:600;font-size:12px;line-height:1.35}
   .raidtbl td.mitc{color:#4A5160;line-height:1.45}
-  .raidtbl td.stc{width:132px}
+  .raidtbl td.stc{width:120px}
+  .own{display:block;font-size:11px;color:#6B7385;font-weight:600;margin-top:4px}
   .raidtbl .dt{font-size:11px;color:var(--muted);margin-top:5px}
   .raidtbl .none{color:#9AA2B1;font-style:italic;font-size:12px}
   .jid{display:inline-block;font-size:10.5px;font-weight:700;color:#4661A8;background:#EAEEF9;border-radius:5px;padding:1px 7px;margin-top:5px;letter-spacing:.02em;font-family:'SF Mono',Consolas,monospace}
@@ -262,12 +264,14 @@ const DEFAULTS={
     {phase:1,item:"Rack Cutover & Testing Actions",status:"Not Started"}
   ],
   statusdeck:[
-    {section:"wins",category:"WINS",item:"Successful Pre-Go/No-Go Meeting",status:"New",date:"",mitigation:"",jira:""},
-    {section:"attention",category:"Issue",item:"Delay of approx 3 days in build-out of Phase 2 call flows in production",status:"New",date:"",mitigation:"Mitigation: Phase out the flows — deliver 50% by Jul 30, remaining by Aug 4. Impact on Phase 3 then also needs to be pushed out",jira:""},
-    {section:"attention",category:"Risk",item:"Late engagement by the Business owners — issues in structure / flows surfacing at UAT/ORT",status:"New",date:"",mitigation:"Mitigation: Continue as designed and approved; circle back at a later date to review concerns",jira:""},
-    {section:"attention",category:"Risk",item:"Outbound Dialer — Scheduling app / PSAP",status:"New",date:"",mitigation:"Remains untested and is with the client approx a month",jira:""},
-    {section:"attention",category:"Risk",item:"Request for code to sit with client",status:"New",date:"",mitigation:"Need to assess the implications — legal or otherwise — to support this request",jira:""},
-    {section:"cfr",category:"CFR",item:"Jira Prem Path Tech Support - Google change request phase 3",status:"New",date:"23 Jul",mitigation:"",jira:""}
+    {section:"wins",category:"WINS",item:"Successful Pre-Go/No-Go Meeting",status:"New",date:"",mitigation:"",jira:"",owner:""},
+    {section:"attention",category:"Issue",item:"Delay of approx 5 days in build-out of Phase 2 call flows in production",status:"Open",date:"",mitigation:"Mitigation: Phase out the flows — 50% by Jul 30, remainder by Aug 4. Impact on Phase 3 pushed out (deck sent; decision needed).",jira:"",owner:"Onix Programme"},
+    {section:"attention",category:"Risk",item:"Late engagement by the Business owners — issues in structure / flows surfacing at UAT/ORT",status:"Open",date:"",mitigation:"Mitigation: Continue as designed and approved; circle back at a later date to review concerns.",jira:"",owner:"Onix Programme"},
+    {section:"attention",category:"Risk",item:"Outbound Dialer (Scheduling app / PSAP) — with client ~1 month, remains untested",status:"Open",date:"",mitigation:"Mitigation: Client to start testing.",jira:"",owner:"Onix Programme"},
+    {section:"attention",category:"Risk",item:"Request for code to sit with client — assessing legal / support implications",status:"Open",date:"",mitigation:"Mitigation: to come from Legal Dept.",jira:"",owner:"Amudha Siva"},
+    {section:"attention",category:"Decision",item:"Outbound Dialer — formal decision needed that Brightspeed go live with the Onix-built dialer",status:"Open",date:"",mitigation:"Formal sign-off required that BS go live with the Onix-built Outbound Dialer.",jira:"",owner:"Amudha Siva"},
+    {section:"attention",category:"Decision",item:"Outbound Dialer — GCP project location required",status:"Open",date:"",mitigation:"Nessa has reached out to Amudha for written confirmation.",jira:"",owner:"Amudha Siva"},
+    {section:"cfr",category:"CFR",item:"Jira Prem Path Tech Support - Google change request phase 3",status:"New",date:"23 Jul",mitigation:"",jira:"",owner:"Travis Williams"}
   ]
 };
 
@@ -320,7 +324,7 @@ async function loadTracker(){const rows=parseCSV(await fx(gviz(CONFIG.TRACKER_SH
   const tot=g("Total To Migrate"),built=g("Production Build Complete"),ppb=g("Pending Production Build"),puat=g("Pending UAT"),rfs=g("Ready for SIT"),sip=g("SIT Build In Progress"),psb=g("Pending SIT Build"),uf=g("UAT Failed"),dw=g("DFCX - Worklog"),dd=g("DFCX - In Design"),dq=g("DFCX - Questions"),ir=g("In Review");
   return{totals:{all:tot.all,p1:tot.p1,p2:tot.p2,p3:tot.p3},p1:{built:built.p1,pendingUAT:puat.p1},p2:{clearedUAT:ppb.p2,pendingUAT:puat.p2,dfcx:dw.p2+dd.p2+dq.p2},p3:{inSIT:rfs.p3+sip.p3,pendingSITbuild:psb.p3,toDeliver:puat.p3,uatFailed:uf.p3,dfcx:dw.p3+dd.p3+dq.p3,inReview:ir.p3}};}
 async function loadManual(){const rows=parseCSV(await fx(gviz(CONFIG.INPUTS_SHEET_ID,CONFIG.MANUAL_TAB)));const m={};rows.forEach((r,i)=>{if(i===0)return;if(r[0]&&r[0].trim())m[r[0].trim()]=(r[1]||"").trim();});["overall_pct","overall_complete","overall_inprogress","overall_notstarted","ws2_pct","ws3_pct","ws4_pct"].forEach(k=>{if(m[k]!=null&&m[k]!=="")m[k]=Number(String(m[k]).replace(/[^0-9.]/g,""));});return m;}
-async function loadStatusDeck(){const rows=parseCSV(await fx(gviz(CONFIG.INPUTS_SHEET_ID,CONFIG.STATUSDECK_TAB)));const o=[];rows.forEach((r,i)=>{if(i===0||!r[2])return;o.push({section:(r[0]||"attention").trim(),category:(r[1]||"").trim(),item:(r[2]||"").trim(),status:(r[3]||"").trim(),date:(r[4]||"").trim(),mitigation:(r[5]||"").trim(),jira:(r[6]||"").trim()});});return o;}
+async function loadStatusDeck(){const rows=parseCSV(await fx(gviz(CONFIG.INPUTS_SHEET_ID,CONFIG.STATUSDECK_TAB)));const o=[];rows.forEach((r,i)=>{if(i===0||!r[2])return;o.push({section:(r[0]||"attention").trim(),category:(r[1]||"").trim(),item:(r[2]||"").trim(),status:(r[3]||"").trim(),date:(r[4]||"").trim(),mitigation:(r[5]||"").trim(),jira:(r[6]||"").trim(),owner:(r[7]||"").trim()});});return o;}
 async function loadWSHealth(){const rows=parseCSV(await fx(gviz(CONFIG.INPUTS_SHEET_ID,CONFIG.WSHEALTH_TAB)));const o=[];rows.forEach((r,i)=>{if(i===0||!r[1])return;o.push({ws:(r[0]||"").trim(),item:(r[1]||"").trim(),status:(r[2]||"").trim(),category:(r[3]||"").trim(),jira:(r[4]||"").trim()});});return o;}
 async function loadNextSteps(){const rows=parseCSV(await fx(gviz(CONFIG.INPUTS_SHEET_ID,CONFIG.NEXTSTEPS_TAB)));const o=[];rows.forEach((r,i)=>{if(i===0||!r[1])return;o.push({phase:Number(r[0]),item:(r[1]||"").trim(),status:(r[2]||"").trim()});});return o;}
 
@@ -432,6 +436,12 @@ function render(m,t,deck,health,plan,nextsteps){
     const f=s.split(/\n/)[0].trim();return f.length>210?f.slice(0,207)+'…':f;};
   // Pill already shows the type — strip a leading "Risk —"/"Issue —"/… from the name
   const cleanName=n=>String(n||"").replace(/^\s*(risk|issue|cfr|decision|watch(?:\s*list)?)\s*[—:\-]\s*/i,'').trim();
+  // Owner: "Name <email>" -> Name; bare email -> Title-Cased local part; else as-is
+  const cleanOwner=raw=>{let s=String(raw||"").trim();if(!s)return'';
+    const ang=s.match(/^([^<]+?)\s*<[^>]+>/);if(ang)return ang[1].trim();
+    if(/^[^\s@]+@[^\s@]+$/.test(s)){const lp=s.split("@")[0].replace(/[._-]+/g," ").trim();
+      return lp.split(/\s+/).map(w=>w?w[0].toUpperCase()+w.slice(1):w).join(" ");}
+    return s;};
   // Wins + CFRs (short lists) as two cards
   const wcSecs=[{key:"wins",cls:"wins",title:"🏆 Wins"},{key:"cfr",cls:"cfr",title:"🔀 CFRs"}];
   document.getElementById("deckwc").innerHTML=wcSecs.map(s=>{const items=(deck||[]).filter(d=>d.section===s.key);
@@ -439,7 +449,7 @@ function render(m,t,deck,health,plan,nextsteps){
       const pill=(s.key==="wins")?'':catPill(d.category);
       const nm=cleanName(d.item);
       const nmrow=pill?`<div class="nmrow">${pill}<div class="nm">${nm}</div></div>`:`<div class="nm">${nm}</div>`;
-      return `<div class="ditem">${nmrow}${d.jira?`<div class="jid">${d.jira}</div>`:''}<div class="m">${statusTag(d.status)}${d.date?d.date:""}</div></div>`;
+      return `<div class="ditem">${nmrow}${d.jira?`<div class="jid">${d.jira}</div>`:''}<div class="m">${statusTag(d.status)}${d.date?d.date:""}${d.owner?`<span class="own">${cleanOwner(d.owner)}</span>`:""}</div></div>`;
     }).join(""):`<div class="dempty">None flagged.</div>`;
     return `<div class="card dcol ${s.cls}"><div class="dhead"><span class="t">${s.title}</span><span class="c">${items.length}</span></div>${body}</div>`;}).join("");
   // RAID — full-width table: Type | Description | Mitigation | Status & date
@@ -449,12 +459,13 @@ function render(m,t,deck,health,plan,nextsteps){
     return `<tr>
       <td class="typ">${catPill(d.category)||'<span class="rpill watch">Item</span>'}</td>
       <td class="desc">${cleanName(d.item)}${d.jira?`<div class="jid">${d.jira}</div>`:''}</td>
+      <td class="ownc">${cleanOwner(d.owner)||'<span class="none">—</span>'}</td>
       <td class="mitc">${mit||'<span class="none">—</span>'}</td>
       <td class="stc">${statusTag(d.status)||''}${d.date?`<div class="dt">${d.date}</div>`:''}</td>
-    </tr>`;}).join(""):`<tr><td colspan="4" class="none" style="padding:14px">None flagged.</td></tr>`;
+    </tr>`;}).join(""):`<tr><td colspan="5" class="none" style="padding:14px">None flagged.</td></tr>`;
   document.getElementById("raidwrap").innerHTML=
     `<div class="card dcol raid"><div class="dhead"><span class="t">⚠️ RAID — Risks, Issues &amp; Decisions</span><span class="c">${raid.length}</span></div>
-     <table class="raidtbl"><thead><tr><th>Type</th><th>Description</th><th>Mitigation</th><th>Status</th></tr></thead>
+     <table class="raidtbl"><thead><tr><th>Type</th><th>Description</th><th>Owner</th><th>Mitigation / Note</th><th>Status</th></tr></thead>
      <tbody>${rrows}</tbody></table></div>`;
 
   // next steps — Phase 1 = remaining Go/No-Go cutover tasks; Phase 2/3 = flow counts
