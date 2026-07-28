@@ -99,6 +99,9 @@
   .pc .lobs{background:#F2F5F9;border-radius:8px;padding:9px 11px;font-size:12px;color:#48546a;line-height:1.5;margin-bottom:12px}
   .pc .dr{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-top:1px solid #F0F2F6}
   .pc .dr .l{color:var(--navy)}.pc .dr .r{font-weight:700;color:var(--navy2)}
+  .pc .dr.golive1{margin-top:8px;border-top:none;background:var(--greenbg);border-radius:8px;padding:9px 11px;align-items:center}
+  .pc .dr.golive1 .l{font-weight:800;letter-spacing:.4px;color:#177049}
+  .gpill1{font-size:11px;font-weight:800;color:#fff;background:var(--green);border-radius:11px;padding:2px 10px;letter-spacing:.3px}
   /* status deck 3 cards */
   .deck{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .deck2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
@@ -112,6 +115,7 @@
   .raidtbl td.stc{width:132px}
   .raidtbl .dt{font-size:11px;color:var(--muted);margin-top:5px}
   .raidtbl .none{color:#9AA2B1;font-style:italic;font-size:12px}
+  .jid{display:inline-block;font-size:10.5px;font-weight:700;color:#4661A8;background:#EAEEF9;border-radius:5px;padding:1px 7px;margin-top:5px;letter-spacing:.02em;font-family:'SF Mono',Consolas,monospace}
   .dcol{padding:16px 18px}
   .dhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
   .dhead .t{font-size:14px;font-weight:800}.dhead .c{font-size:12px;font-weight:800;color:#fff;border-radius:11px;padding:1px 9px}
@@ -258,14 +262,12 @@ const DEFAULTS={
     {phase:1,item:"Rack Cutover & Testing Actions",status:"Not Started"}
   ],
   statusdeck:[
-    {section:"wins",category:"WINS",item:"Successful Pre-Go/No-Go Meeting",status:"New",date:"",mitigation:""},
-    {section:"attention",category:"Issue",item:"Delay of approx 3 days in build-out of Phase 2 call flows in production",status:"New",date:"",mitigation:"Mitigation: Phase out the flows — deliver 50% by Jul 30, remaining by Aug 3rd"},
-    {section:"attention",category:"Risk",item:"Late engagement by the Business owners — issues in structure / flows surfacing at UAT/ORT",status:"New",date:"",mitigation:"Mitigation: Continue as designed and approved; circle back at a later date to review concerns"},
-    {section:"attention",category:"Risk",item:"No Confirmed Backout Plan: Numbers Ported but Agents Still on Genesys",status:"In Progress",date:"23 Jul",mitigation:""},
-    {section:"attention",category:"Risk",item:"No Dedicated Code Repository in Brightspeed Environment",status:"In Progress",date:"24 Jul",mitigation:""},
-    {section:"attention",category:"Risk",item:"SIP Routing Architecture Change: Late Pivot to Telephone Number Routing",status:"In Progress",date:"23 Jul",mitigation:""},
-    {section:"attention",category:"Issue",item:"API Queue Name Mismatch — getGenesysRouteCodeDetails",status:"In Progress",date:"24 Jun",mitigation:""},
-    {section:"cfr",category:"CFR",item:"Jira Prem Path Tech Support - Google change request phase 3",status:"New",date:"23 Jul",mitigation:""}
+    {section:"wins",category:"WINS",item:"Successful Pre-Go/No-Go Meeting",status:"New",date:"",mitigation:"",jira:""},
+    {section:"attention",category:"Issue",item:"Delay of approx 3 days in build-out of Phase 2 call flows in production",status:"New",date:"",mitigation:"Mitigation: Phase out the flows — deliver 50% by Jul 30, remaining by Aug 4. Impact on Phase 3 then also needs to be pushed out",jira:""},
+    {section:"attention",category:"Risk",item:"Late engagement by the Business owners — issues in structure / flows surfacing at UAT/ORT",status:"New",date:"",mitigation:"Mitigation: Continue as designed and approved; circle back at a later date to review concerns",jira:""},
+    {section:"attention",category:"Risk",item:"Outbound Dialer — Scheduling app / PSAP",status:"New",date:"",mitigation:"Remains untested and is with the client approx a month",jira:""},
+    {section:"attention",category:"Risk",item:"Request for code to sit with client",status:"New",date:"",mitigation:"Need to assess the implications — legal or otherwise — to support this request",jira:""},
+    {section:"cfr",category:"CFR",item:"Jira Prem Path Tech Support - Google change request phase 3",status:"New",date:"23 Jul",mitigation:"",jira:""}
   ]
 };
 
@@ -297,15 +299,15 @@ const DEF_PLAN=[
   {phase:2,milestone:"SIT Build",start:_d(2026,5,19),finish:_d(2026,7,6)},
   {phase:2,milestone:"UAT in SIT",start:_d(2026,7,7),finish:_d(2026,7,14)},
   {phase:2,milestone:"Prod Build",start:_d(2026,7,17),finish:_d(2026,8,4)},
-  {phase:2,milestone:"ORT",start:_d(2026,7,31),finish:_d(2026,8,6)},
-  {phase:2,milestone:"Approvals",start:_d(2026,8,7),finish:_d(2026,8,10)},
+  {phase:2,milestone:"ORT",start:_d(2026,8,5),finish:_d(2026,8,11)},
+  {phase:2,milestone:"Approvals",start:_d(2026,8,12),finish:_d(2026,8,13)},
   {phase:2,milestone:"Hypercare",start:_d(2026,8,19),finish:_d(2026,8,31)},
   {phase:2,milestone:"Go Live",start:_d(2026,8,18),finish:_d(2026,8,18)},
-  {phase:3,milestone:"SIT Build",start:_d(2026,6,5),finish:_d(2026,7,21)},
-  {phase:3,milestone:"UAT in SIT",start:_d(2026,7,22),finish:_d(2026,7,29)},
-  {phase:3,milestone:"Prod Build",start:_d(2026,8,3),finish:_d(2026,8,14)},
-  {phase:3,milestone:"ORT",start:_d(2026,8,17),finish:_d(2026,8,20)},
-  {phase:3,milestone:"Approvals",start:_d(2026,8,21),finish:_d(2026,8,21)},
+  {phase:3,milestone:"SIT Build",start:_d(2026,6,12),finish:_d(2026,7,29)},
+  {phase:3,milestone:"UAT in SIT",start:_d(2026,7,22),finish:_d(2026,8,5)},
+  {phase:3,milestone:"Prod Build",start:_d(2026,8,7),finish:_d(2026,8,20)},
+  {phase:3,milestone:"ORT",start:_d(2026,8,21),finish:_d(2026,8,26)},
+  {phase:3,milestone:"Approvals",start:_d(2026,8,27),finish:_d(2026,8,27)},
   {phase:3,milestone:"Hypercare",start:_d(2026,9,1),finish:_d(2026,9,15)},
   {phase:3,milestone:"Go Live",start:_d(2026,8,31),finish:_d(2026,8,31)}
 ];
@@ -318,7 +320,7 @@ async function loadTracker(){const rows=parseCSV(await fx(gviz(CONFIG.TRACKER_SH
   const tot=g("Total To Migrate"),built=g("Production Build Complete"),ppb=g("Pending Production Build"),puat=g("Pending UAT"),rfs=g("Ready for SIT"),sip=g("SIT Build In Progress"),psb=g("Pending SIT Build"),uf=g("UAT Failed"),dw=g("DFCX - Worklog"),dd=g("DFCX - In Design"),dq=g("DFCX - Questions"),ir=g("In Review");
   return{totals:{all:tot.all,p1:tot.p1,p2:tot.p2,p3:tot.p3},p1:{built:built.p1,pendingUAT:puat.p1},p2:{clearedUAT:ppb.p2,pendingUAT:puat.p2,dfcx:dw.p2+dd.p2+dq.p2},p3:{inSIT:rfs.p3+sip.p3,pendingSITbuild:psb.p3,toDeliver:puat.p3,uatFailed:uf.p3,dfcx:dw.p3+dd.p3+dq.p3,inReview:ir.p3}};}
 async function loadManual(){const rows=parseCSV(await fx(gviz(CONFIG.INPUTS_SHEET_ID,CONFIG.MANUAL_TAB)));const m={};rows.forEach((r,i)=>{if(i===0)return;if(r[0]&&r[0].trim())m[r[0].trim()]=(r[1]||"").trim();});["overall_pct","overall_complete","overall_inprogress","overall_notstarted","ws2_pct","ws3_pct","ws4_pct"].forEach(k=>{if(m[k]!=null&&m[k]!=="")m[k]=Number(String(m[k]).replace(/[^0-9.]/g,""));});return m;}
-async function loadStatusDeck(){const rows=parseCSV(await fx(gviz(CONFIG.INPUTS_SHEET_ID,CONFIG.STATUSDECK_TAB)));const o=[];rows.forEach((r,i)=>{if(i===0||!r[2])return;o.push({section:(r[0]||"attention").trim(),category:(r[1]||"").trim(),item:(r[2]||"").trim(),status:(r[3]||"").trim(),date:(r[4]||"").trim(),mitigation:(r[5]||"").trim()});});return o;}
+async function loadStatusDeck(){const rows=parseCSV(await fx(gviz(CONFIG.INPUTS_SHEET_ID,CONFIG.STATUSDECK_TAB)));const o=[];rows.forEach((r,i)=>{if(i===0||!r[2])return;o.push({section:(r[0]||"attention").trim(),category:(r[1]||"").trim(),item:(r[2]||"").trim(),status:(r[3]||"").trim(),date:(r[4]||"").trim(),mitigation:(r[5]||"").trim(),jira:(r[6]||"").trim()});});return o;}
 async function loadWSHealth(){const rows=parseCSV(await fx(gviz(CONFIG.INPUTS_SHEET_ID,CONFIG.WSHEALTH_TAB)));const o=[];rows.forEach((r,i)=>{if(i===0||!r[1])return;o.push({ws:(r[0]||"").trim(),item:(r[1]||"").trim(),status:(r[2]||"").trim(),category:(r[3]||"").trim(),jira:(r[4]||"").trim()});});return o;}
 async function loadNextSteps(){const rows=parseCSV(await fx(gviz(CONFIG.INPUTS_SHEET_ID,CONFIG.NEXTSTEPS_TAB)));const o=[];rows.forEach((r,i)=>{if(i===0||!r[1])return;o.push({phase:Number(r[0]),item:(r[1]||"").trim(),status:(r[2]||"").trim()});});return o;}
 
@@ -411,7 +413,8 @@ function render(m,t,deck,health,plan,nextsteps){
     const g=P[ph]&&P[ph]["Go Live"];const gld=g&&g.s?MONF[g.s.getMonth()]+" "+g.s.getDate():"—";
     const days=g&&g.s?Math.max(0,Math.ceil((g.s-today)/864e5)):0;
     const rows=PLAN.cardOrder.map(m=>{const seg=(P[ph]&&P[ph][m])||{};return `<div class="dr"><span class="l">${PLAN.cardLabel[m]}</span><span class="r">${fmtRng(seg.s,seg.f)}${mk(mstat(seg.s,seg.f,today))}</span></div>`;}).join("");
-    return `<div class="card c"><div class="ph1">Phase ${ph}</div><div><span class="badge">GO LIVE</span></div><div class="big">${gld}</div><div class="out">${flowsBy[ph]} flows · ${days} days out</div><div class="lobs">${PLAN.lobs[ph]}</div>${rows}</div>`;
+    const extra = ph===1 ? `<div class="dr golive1"><span class="l">JULY 28 · GO LIVE · 335 AGENTS!</span><span class="r"><span class="gpill1">● GREEN</span></span></div>` : "";
+    return `<div class="card c"><div class="ph1">Phase ${ph}</div><div><span class="badge">GO LIVE</span></div><div class="big">${gld}</div><div class="out">${flowsBy[ph]} flows · ${days} days out</div><div class="lobs">${PLAN.lobs[ph]}</div>${rows}${extra}</div>`;
   }).join("");
 
   // status deck: Wins + CFRs cards (row) and a full-width RAID table
@@ -424,7 +427,9 @@ function render(m,t,deck,health,plan,nextsteps){
     return'';};
   // Only surface an explicit "Mitigation: ..." note; ignore long status logs
   const mitClean=raw=>{const s=String(raw||"").trim();if(!s)return'';
-    const m=s.match(/mitigation\s*[—:\-]\s*([^\n]+)/i);return m?m[1].trim():'';};
+    const m=s.match(/mitigation\s*[—:\-]\s*([^\n]+)/i);
+    if(m)return m[1].trim();
+    const f=s.split(/\n/)[0].trim();return f.length>210?f.slice(0,207)+'…':f;};
   // Pill already shows the type — strip a leading "Risk —"/"Issue —"/… from the name
   const cleanName=n=>String(n||"").replace(/^\s*(risk|issue|cfr|decision|watch(?:\s*list)?)\s*[—:\-]\s*/i,'').trim();
   // Wins + CFRs (short lists) as two cards
@@ -434,7 +439,7 @@ function render(m,t,deck,health,plan,nextsteps){
       const pill=(s.key==="wins")?'':catPill(d.category);
       const nm=cleanName(d.item);
       const nmrow=pill?`<div class="nmrow">${pill}<div class="nm">${nm}</div></div>`:`<div class="nm">${nm}</div>`;
-      return `<div class="ditem">${nmrow}<div class="m">${statusTag(d.status)}${d.date?d.date:""}</div></div>`;
+      return `<div class="ditem">${nmrow}${d.jira?`<div class="jid">${d.jira}</div>`:''}<div class="m">${statusTag(d.status)}${d.date?d.date:""}</div></div>`;
     }).join(""):`<div class="dempty">None flagged.</div>`;
     return `<div class="card dcol ${s.cls}"><div class="dhead"><span class="t">${s.title}</span><span class="c">${items.length}</span></div>${body}</div>`;}).join("");
   // RAID — full-width table: Type | Description | Mitigation | Status & date
@@ -443,7 +448,7 @@ function render(m,t,deck,health,plan,nextsteps){
     const mit=mitClean(d.mitigation);
     return `<tr>
       <td class="typ">${catPill(d.category)||'<span class="rpill watch">Item</span>'}</td>
-      <td class="desc">${cleanName(d.item)}</td>
+      <td class="desc">${cleanName(d.item)}${d.jira?`<div class="jid">${d.jira}</div>`:''}</td>
       <td class="mitc">${mit||'<span class="none">—</span>'}</td>
       <td class="stc">${statusTag(d.status)||''}${d.date?`<div class="dt">${d.date}</div>`:''}</td>
     </tr>`;}).join(""):`<tr><td colspan="4" class="none" style="padding:14px">None flagged.</td></tr>`;
