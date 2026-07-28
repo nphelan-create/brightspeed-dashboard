@@ -239,16 +239,16 @@
 
 <script>
 const CONFIG = {
-  USE_LIVE:true,
+  USE_LIVE:false,
   TRACKER_SHEET_ID:"1jcdN9QQnhCQwLAcQXBf6Yjr3Rj_peoObbeJAlq83ZWw", TRACKER_TAB:"Dashboard",
   INPUTS_SHEET_ID:"1MbDhwFsCy_HL28SQScKpyKHrccQRmdskraAEpJby_e8", MANUAL_TAB:"Manual", STATUSDECK_TAB:"StatusDeck", WSHEALTH_TAB:"WSHealth", PLAN_TAB:"Plan", NEXTSTEPS_TAB:"NextSteps"
 };
 const gviz=(id,tab)=>`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
 
 const DEFAULTS={
-  manual:{data_as_of:"July 26, 2026",overall_pct:76,overall_complete:126,overall_inprogress:46,overall_notstarted:95,ws2_pct:90,ws3_pct:63,ws4_pct:55},
-  tracker:{totals:{all:86,p1:15,p2:28,p3:43},p1:{built:15,pendingUAT:0},p2:{clearedUAT:21,pendingUAT:7,dfcx:0},
-    p3:{inSIT:22,pendingSITbuild:0,toDeliver:14,uatFailed:9,dfcx:7,inReview:5}},
+  manual:{data_as_of:"July 28, 2026",overall_pct:77,overall_complete:141,overall_inprogress:52,overall_notstarted:80,ws2_pct:90,ws3_pct:68,ws4_pct:55},
+  tracker:{totals:{all:86,p1:15,p2:28,p3:43},p1:{built:15,pendingUAT:0},p2:{clearedUAT:20,pendingUAT:7,dfcx:0},
+    p3:{inSIT:1,pendingSITbuild:0,toDeliver:28,uatFailed:2,dfcx:7,inReview:5}},
   wshealth:[{ws:"ws3",item:"Late engagement by the Business owners — issues in structure / flows surfacing at UAT/ORT",status:"New",category:"Risk",jira:""}],
   nextsteps:[
     {phase:1,item:"Secure Lumen Acceptance: revised Phase 1 port request (move to Jul 29)",status:"Not Started"},
@@ -488,7 +488,7 @@ function amberNote(H){const a=["ws2","ws3","ws4","overall"].filter(w=>H[w].lengt
     try{const ns=await loadNextSteps();if(ns)nextsteps=ns;}catch(e){console.warn("nextsteps fallback",e);}
   }
   render(m,t,deck,health,plan,nextsteps);
-  const b=document.getElementById("livebadge");if(!live){b.textContent="● SAMPLE";b.style.color="#9AA2B1";b.style.borderColor="#9AA2B1";}
+  const b=document.getElementById("livebadge");b.textContent="● Data as of "+m.data_as_of;b.style.color="#177049";b.style.borderColor="#BFE3CF";
 })();
 </script>
 </body>
