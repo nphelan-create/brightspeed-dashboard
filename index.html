@@ -382,21 +382,26 @@ function render(m,t,deck,health,plan,nextsteps){
   // call flow build progression (old style, tracker-driven)
   // Prod Build status is driven by the Smartsheet Project Plan dates (commenced / pending / complete)
   const p2pb=planChip(2,"Prod Build")||["grey","Pending Start",8];
+  // Phase 2 build buckets — lead with Production Build Complete, then remaining statuses; hide any at zero
+  const p2stg=[
+    ["Production build complete",t.p2.built,"g","done","Complete"],
+    ["Approved for production build",t.p2.clearedUAT,"","prog","In Progress"],
+    ["Pending UAT",t.p2.pendingUAT,"","prog","In Progress"],
+    ["In DFCX design",t.p2.dfcx,"","grey","In Progress"]
+  ].filter(x=>Number(x[1])>0)
+   .map(x=>[x[0],x[1]+" flow"+(x[1]==1?"":"s"),t.totals.p2?Math.round(x[1]/t.totals.p2*100):0,x[2],x[3],x[4]]);
   const cf=[
     {ph:"Phase 1",flows:t.totals.p1,gl:"Go Live Jul 28",stg:[
       ["SIT Build & Config",t.totals.p1+" / "+t.totals.p1,100,"g","done","Complete"],
       ["UAT in SIT",t.totals.p1+" / "+t.totals.p1+" cleared",100,"g","done","Complete"],
       ["Prod Build",t.p1.built+" flows complete",100,"g","done","Complete"]
     ]},
-    {ph:"Phase 2",flows:t.totals.p2,gl:"Go Live Aug 18",stg:[
-      ["UAT in SIT",t.p2.clearedUAT+" cleared · "+t.p2.pendingUAT+" in UAT",t.totals.p2?Math.round(t.p2.clearedUAT/t.totals.p2*100):0,"","prog","In Progress"],
-      ["Prod Build",t.p2.clearedUAT+" flows "+(p2pb[0]==="grey"?"approved & queued":(p2pb[0]==="done"?"built":"in production build")),p2pb[2],p2pb[0]==="done"?"g":"",p2pb[0],p2pb[1]],
-      ["DFCX Design",t.p2.dfcx+" flows",t.p2.dfcx?40:0,"","grey",t.p2.dfcx?"In Progress":"Complete"]
-    ]},
+    {ph:"Phase 2",flows:t.totals.p2,gl:"Go Live Aug 18",stg:p2stg},
     {ph:"Phase 3",flows:t.totals.p3,gl:"Go Live Aug 31",stg:[
       ["SIT Testing & Queue",t.p3.inSIT+" in SIT · "+t.p3.pendingSITbuild+" pending build",t.totals.p3?Math.round(t.p3.inSIT/t.totals.p3*100):0,"","prog","In Progress"],
-      ["To be delivered / UAT",t.p3.toDeliver+" pending UAT · "+t.p3.uatFailed+" rework",40,"","prog","In Progress"],
-      ["DFCX Design & Review",(t.p3.dfcx+t.p3.inReview)+" flows",40,"","grey","In Review"]
+      ["UAT",t.p3.toDeliver+" pending UAT · "+t.p3.uatFailed+" rework",40,"","prog","In Progress"],
+      ["DFCX Design",t.p3.dfcx+" flows",t.totals.p3?Math.round(t.p3.dfcx/t.totals.p3*100):0,"","grey","In Design"],
+      ["Outbound Dialer",t.p3.inReview+" flows",t.totals.p3?Math.round(t.p3.inReview/t.totals.p3*100):0,"","grey","In Review"]
     ]}
   ];
   document.getElementById("cf").innerHTML=cf.map(c=>`<div class="card c"><div class="ph1">${c.ph} · ${c.flows} flows</div><div class="gl">${c.gl}</div>
