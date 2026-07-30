@@ -251,8 +251,8 @@ const CONFIG = {
 const gviz=(id,tab)=>`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
 
 const DEFAULTS={
-  manual:{data_as_of:"July 29, 2026",overall_pct:77,overall_complete:141,overall_inprogress:52,overall_notstarted:80,ws2_pct:90,ws3_pct:68,ws4_pct:55},
-  tracker:{totals:{all:86,p1:15,p2:28,p3:43},p1:{built:15,pendingUAT:0},p2:{built:5,clearedUAT:16,pendingUAT:7,dfcx:0},
+  manual:{data_as_of:"July 30, 2026",overall_pct:77,overall_complete:149,overall_inprogress:52,overall_notstarted:79,ws2_pct:90,ws3_pct:69,ws4_pct:55},
+  tracker:{totals:{all:86,p1:15,p2:28,p3:43},p1:{built:15,pendingUAT:0},p2:{built:6,clearedUAT:14,buildInProgress:1,pendingUAT:7,dfcx:0},
     p3:{built:0,clearedUAT:0,inSIT:1,pendingSITbuild:0,toDeliver:29,uatFailed:1,dfcx:7,inReview:5}},
   wshealth:[{ws:"ws3",item:"Late engagement by the Business owners — issues in structure / flows surfacing at UAT/ORT",status:"New",category:"Risk",jira:""}],
   nextsteps:[
@@ -325,8 +325,8 @@ const nums=a=>a.map(x=>String(x).replace(/[, ]/g,'')).filter(x=>x!==""&&!isNaN(x
 function tv(rows,l){for(const r of rows){if((r[0]||"").trim().toLowerCase()===l.toLowerCase()){const n=nums(r);return{all:n[0],p1:n[1],p2:n[2],p3:n[3]};}}return null;}
 async function fx(u){const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw new Error(r.status);return r.text();}
 async function loadTracker(){const rows=parseCSV(await fx(gviz(CONFIG.TRACKER_SHEET_ID,CONFIG.TRACKER_TAB)));const g=l=>tv(rows,l)||{all:0,p1:0,p2:0,p3:0};
-  const tot=g("Total To Migrate"),built=g("Production Build Complete"),ppb=g("Pending Production Build"),puat=g("Pending UAT"),rfs=g("Ready for SIT"),sip=g("SIT Build In Progress"),psb=g("Pending SIT Build"),uf=g("UAT Failed"),dw=g("DFCX - Worklog"),dd=g("DFCX - In Design"),dq=g("DFCX - Questions"),ir=g("In Review");
-  return{totals:{all:tot.all,p1:tot.p1,p2:tot.p2,p3:tot.p3},p1:{built:built.p1,pendingUAT:puat.p1},p2:{built:built.p2,clearedUAT:ppb.p2,pendingUAT:puat.p2,dfcx:dw.p2+dd.p2+dq.p2},p3:{built:built.p3,clearedUAT:ppb.p3,inSIT:rfs.p3+sip.p3,pendingSITbuild:psb.p3,toDeliver:puat.p3,uatFailed:uf.p3,dfcx:dw.p3+dd.p3+dq.p3,inReview:ir.p3}};}
+  const tot=g("Total To Migrate"),built=g("Production Build Complete"),pbip=g("Production Build in Progress"),ppb=g("Pending Production Build"),puat=g("Pending UAT"),rfs=g("Ready for SIT"),sip=g("SIT Build In Progress"),psb=g("Pending SIT Build"),uf=g("UAT Failed"),dw=g("DFCX - Worklog"),dd=g("DFCX - In Design"),dq=g("DFCX - Questions"),ir=g("In Review");
+  return{totals:{all:tot.all,p1:tot.p1,p2:tot.p2,p3:tot.p3},p1:{built:built.p1,pendingUAT:puat.p1},p2:{built:built.p2,clearedUAT:ppb.p2,buildInProgress:pbip.p2,pendingUAT:puat.p2,dfcx:dw.p2+dd.p2+dq.p2},p3:{built:built.p3,clearedUAT:ppb.p3,inSIT:rfs.p3+sip.p3,pendingSITbuild:psb.p3,toDeliver:puat.p3,uatFailed:uf.p3,dfcx:dw.p3+dd.p3+dq.p3,inReview:ir.p3}};}
 async function loadManual(){const rows=parseCSV(await fx(gviz(CONFIG.INPUTS_SHEET_ID,CONFIG.MANUAL_TAB)));const m={};rows.forEach((r,i)=>{if(i===0)return;if(r[0]&&r[0].trim())m[r[0].trim()]=(r[1]||"").trim();});["overall_pct","overall_complete","overall_inprogress","overall_notstarted","ws2_pct","ws3_pct","ws4_pct"].forEach(k=>{if(m[k]!=null&&m[k]!=="")m[k]=Number(String(m[k]).replace(/[^0-9.]/g,""));});return m;}
 async function loadStatusDeck(){const rows=parseCSV(await fx(gviz(CONFIG.INPUTS_SHEET_ID,CONFIG.STATUSDECK_TAB)));const o=[];rows.forEach((r,i)=>{if(i===0||!r[2])return;o.push({section:(r[0]||"attention").trim(),category:(r[1]||"").trim(),item:(r[2]||"").trim(),status:(r[3]||"").trim(),date:(r[4]||"").trim(),mitigation:(r[5]||"").trim(),jira:(r[6]||"").trim(),owner:(r[7]||"").trim()});});return o;}
 async function loadWSHealth(){const rows=parseCSV(await fx(gviz(CONFIG.INPUTS_SHEET_ID,CONFIG.WSHEALTH_TAB)));const o=[];rows.forEach((r,i)=>{if(i===0||!r[1])return;o.push({ws:(r[0]||"").trim(),item:(r[1]||"").trim(),status:(r[2]||"").trim(),category:(r[3]||"").trim(),jira:(r[4]||"").trim()});});return o;}
@@ -386,6 +386,7 @@ function render(m,t,deck,health,plan,nextsteps){
   // Phase 2 build buckets — lead with Production Build Complete, then remaining statuses; hide any at zero
   const p2stg=[
     ["Production build complete",t.p2.built,"g","done","Complete"],
+    ["Production build in progress",t.p2.buildInProgress||0,"","prog","In Progress"],
     ["Approved for production build",t.p2.clearedUAT,"","prog","In Progress"],
     ["Pending UAT",t.p2.pendingUAT,"","prog","In Progress"],
     ["In DFCX design",t.p2.dfcx,"","grey","In Progress"]
@@ -398,6 +399,7 @@ function render(m,t,deck,health,plan,nextsteps){
     if(s.includes("dfcx"))return 2;                                  // DFCX design
     if(s.includes("outbound dialer")||s.includes("in review"))return 3;  // review
     if(s.includes("approved"))return 5;                             // approved for production build
+    if(s.includes("in progress")&&s.includes("build"))return 5.5;   // production build in progress
     if(s.includes("prod build")||s.includes("production build"))return 6; // production build complete
     if(s.includes("ort"))return 7;                                  // ORT
     return 8;};
@@ -494,7 +496,7 @@ function render(m,t,deck,health,plan,nextsteps){
   const p1html=p1tasks.length
     ? p1tasks.map(x=>`<div class="nstask">${statusTag(x.status)||'<span class="tag new">Open</span>'}<span>${short(x.item)}</span></div>`).join("")
     : `<div class="dempty">No open cutover tasks.</div>`;
-  const col2=[[t.p2.dfcx,"In DFCX design"],[t.p2.pendingUAT,"Pending UAT"],[t.p2.clearedUAT,"Approved for production build"],[t.p2.built,"Production build complete",1]];
+  const col2=[[t.p2.dfcx,"In DFCX design"],[t.p2.pendingUAT,"Pending UAT"],[t.p2.clearedUAT,"Approved for production build"],[t.p2.buildInProgress||0,"Production build in progress"],[t.p2.built,"Production build complete",1]];
   const col3=[[t.p3.pendingSITbuild,"Pending SIT build"],[t.p3.inSIT,"In SIT testing"],[t.p3.dfcx,"In DFCX design"],[t.p3.inReview,"Outbound Dialer (in review)"],[t.p3.toDeliver,"Pending UAT"],[t.p3.uatFailed,"UAT failed — rework"],[t.p3.clearedUAT,"Approved for production build"],[t.p3.built,"Production build complete",1]];
   const countCol=(h,rows)=>`<div class="nsp"><div class="h">${h}</div>${rows.map(x=>`<div class="r${x[2]?' built':''}"><span class="n">${x[0]}</span><span class="l">${x[1]}</span></div>`).join("")}</div>`;
   document.getElementById("ns").innerHTML=
