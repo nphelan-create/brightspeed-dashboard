@@ -413,7 +413,7 @@ function render(m,t,deck,health,plan,nextsteps){
       ["Prod Build",t.p1.built+" flows complete",100,"g","done","Complete"]
     ]},
     {ph:"Phase 2",flows:t.totals.p2,gl:"Go Live Aug 18",delta:"▲ +18 this week — production-build complete up 5 → 23",stg:p2stg},
-    {ph:"Phase 3",flows:t.totals.p3,gl:"Go Live Aug 31",stg:[
+    {ph:"Phase 3",flows:t.totals.p3,gl:"Go Live Aug 31",delta:"▲ 5 flows advanced out of design this week → into SIT/UAT; rework cleared 1 → 0",stg:[
       ["SIT Testing & Queue",t.p3.inSIT+" in SIT · "+t.p3.pendingSITbuild+" pending build",t.totals.p3?Math.round(t.p3.inSIT/t.totals.p3*100):0,"","prog","In Progress"],
       ["UAT",t.p3.toDeliver+" pending UAT · "+t.p3.uatFailed+" rework",40,"","prog","In Progress"],
       ["DFCX Design",t.p3.dfcx+" flows",t.totals.p3?Math.round(t.p3.dfcx/t.totals.p3*100):0,"","grey","In Design"],
