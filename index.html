@@ -251,8 +251,8 @@ const CONFIG = {
 const gviz=(id,tab)=>`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
 
 const DEFAULTS={
-  manual:{data_as_of:"August 4, 2026",overall_pct:80,overall_complete:151,overall_inprogress:53,overall_notstarted:77,ws2_pct:90,ws3_pct:71,ws4_pct:63},
-  tracker:{totals:{all:86,p1:15,p2:28,p3:43},p1:{built:15,pendingUAT:0},p2:{built:19,clearedUAT:4,buildInProgress:5,pendingUAT:0,dfcx:0},
+  manual:{data_as_of:"August 5, 2026",overall_pct:80,overall_complete:151,overall_inprogress:53,overall_notstarted:77,ws2_pct:90,ws3_pct:71,ws4_pct:63},
+  tracker:{totals:{all:86,p1:15,p2:28,p3:43},p1:{built:15,pendingUAT:0},p2:{built:23,clearedUAT:1,buildInProgress:4,pendingUAT:0,dfcx:0},
     p3:{built:0,clearedUAT:0,inSIT:1,pendingSITbuild:0,toDeliver:29,uatFailed:1,dfcx:7,inReview:5}},
   wshealth:[{ws:"ws3",item:"Late engagement by the Business owners — issues in structure / flows surfacing at UAT/ORT",status:"New",category:"Risk",jira:""}],
   nextsteps:[
@@ -268,14 +268,14 @@ const DEFAULTS={
     {phase:1,item:"Repoint 16 numbers — porting over tonight",status:"In Progress"}
   ],
   statusdeck:[
-    {section:"wins",category:"WINS",item:"Successful Pre-Go/No-Go Meeting",status:"New",date:"",mitigation:"",jira:"",owner:""},
-    {section:"attention",category:"Issue",item:"Delay of approx 5 days in build-out of Phase 2 call flows in production",status:"Open",date:"",mitigation:"Mitigation: Phase out the flows — 50% by Jul 30, remainder by Aug 4. Impact on Phase 3 pushed out (deck sent; decision needed).",jira:"",owner:"Onix Programme"},
-    {section:"attention",category:"Risk",item:"Late engagement by the Business owners — issues in structure / flows surfacing at UAT/ORT",status:"Open",date:"",mitigation:"Mitigation: Continue as designed and approved; circle back at a later date to review concerns.",jira:"",owner:"Onix Programme"},
-    {section:"attention",category:"Risk",item:"Outbound Dialer (Scheduling app / PSAP) — with client ~1 month, remains untested",status:"Open",date:"",mitigation:"Mitigation: Client to start testing.",jira:"",owner:"Onix Programme"},
-    {section:"attention",category:"Risk",item:"Request for code to sit with client — assessing legal / support implications",status:"Open",date:"",mitigation:"Mitigation: to come from Legal Dept.",jira:"",owner:"Amudha Siva"},
+    {section:"attention",category:"Issue",item:"Delay of approx 5 days in build-out of Phase 2 call flows in production",status:"Open",date:"",mitigation:"Mitigation: Phase out the flows — 20 delivered by COB Aug 4, remainder (users / skills etc.) completed by COB Aug 6. Client can continue ORT in parallel.",jira:"",owner:"Onix Programme"},
+    {section:"attention",category:"Issue",item:"Design restructure — business sign-off at risk for Phase 2",status:"",date:"",mitigation:"Business engagement has surfaced an ask to restructure the design (\"too many clicks\" for the end user). Onix has proposed a redesign to be completed after the initial Phase 1 & 2 go-lives.",jira:"",owner:""},
+    {section:"attention",category:"Risk",item:"Late engagement by the Business owners — issues in structure / signed-off flows surfacing at UAT/ORT",status:"Open",date:"",mitigation:"Mitigation: Continue as designed and approved; circle back at a later date to review concerns.",jira:"",owner:"Onix Programme"},
+    {section:"attention",category:"Risk",item:"Outbound Dialer (Scheduling app / PSAP) — with client ~1 month, remains untested",status:"Open",date:"",mitigation:"Mitigation: Testing has commenced; new client requirements / code changes to be handled via change management after go-live.",jira:"",owner:"Onix Programme"},
+    {section:"attention",category:"Risk",item:"Phase 3 go-live risk — Phase 2 & 3 in parallel stretches resources; Phase 3 build is larger and more complex",status:"",date:"",mitigation:"Recommendation: push Phase 3 out by one week to complete build / config / test / ORT phases.",jira:"",owner:""},
+    {section:"attention",category:"Risk",item:"Request for code to sit with client — assessing legal / support implications",status:"Open",date:"",mitigation:"Mitigation: to come from the Legal Dept. (UI & data currently client-side, code on Onix side; client requests ownership of the code.)",jira:"",owner:"Amudha Siva"},
     {section:"attention",category:"Decision",item:"Outbound Dialer — formal decision needed that Brightspeed go live with the Onix-built dialer",status:"Open",date:"",mitigation:"Formal sign-off required that BS go live with the Onix-built Outbound Dialer.",jira:"",owner:"Amudha Siva"},
-    {section:"attention",category:"Decision",item:"Outbound Dialer — GCP project location required",status:"Open",date:"",mitigation:"Nessa has reached out to Amudha for written confirmation.",jira:"",owner:"Amudha Siva"},
-    {section:"cfr",category:"CFR",item:"Jira Prem Path Tech Support - Google change request phase 3",status:"New",date:"23 Jul",mitigation:"",jira:"",owner:"Travis Williams"}
+    {section:"attention",category:"Decision",item:"Outbound Dialer — GCP project location required",status:"Open",date:"",mitigation:"Nessa has reached out to Amudha for written confirmation — none received as yet.",jira:"",owner:"Amudha Siva"}
   ]
 };
 
