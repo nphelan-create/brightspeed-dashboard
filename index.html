@@ -412,7 +412,7 @@ function render(m,t,deck,health,plan,nextsteps){
       ["UAT in SIT",t.totals.p1+" / "+t.totals.p1+" cleared",100,"g","done","Complete"],
       ["Prod Build",t.p1.built+" flows complete",100,"g","done","Complete"]
     ]},
-    {ph:"Phase 2",flows:t.totals.p2,gl:"Go Live Aug 18",stg:p2stg},
+    {ph:"Phase 2",flows:t.totals.p2,gl:"Go Live Aug 18",delta:"▲ +18 this week — production-build complete up 5 → 23",stg:p2stg},
     {ph:"Phase 3",flows:t.totals.p3,gl:"Go Live Aug 31",stg:[
       ["SIT Testing & Queue",t.p3.inSIT+" in SIT · "+t.p3.pendingSITbuild+" pending build",t.totals.p3?Math.round(t.p3.inSIT/t.totals.p3*100):0,"","prog","In Progress"],
       ["UAT",t.p3.toDeliver+" pending UAT · "+t.p3.uatFailed+" rework",40,"","prog","In Progress"],
@@ -421,6 +421,7 @@ function render(m,t,deck,health,plan,nextsteps){
     ]}
   ];
   document.getElementById("cf").innerHTML=cf.map(c=>`<div class="card c"><div class="ph1">${c.ph} · ${c.flows} flows</div><div class="gl">${c.gl}</div>
+    ${c.delta?`<div style="font-size:11px;font-weight:800;color:#177049;background:#EAF7EF;border-radius:6px;padding:5px 9px;margin:-8px 0 12px;letter-spacing:.2px">${c.delta}</div>`:""}
     ${c.stg.slice().sort((a,b)=>stageRank(a[0])-stageRank(b[0])).map(s=>`<div class="stg"><div class="top"><span class="sl">${s[0]}</span><span class="sv ${s[3]}">${s[1]}</span></div><div class="bar"><i class="${s[3]}" style="width:${s[2]}%"></i></div><span class="chip ${s[4]}">${s[5]}</span></div>`).join("")}</div>`).join("");
 
   // gantt (dates from plan)
@@ -449,7 +450,9 @@ function render(m,t,deck,health,plan,nextsteps){
       } else { rng=fmtRng(seg.s,seg.f); }
       const mkr=(rev&&rev.status)?` <span class="tag" style="background:#FBE3E3;color:#B0242A;font-weight:800;margin-right:0">${rev.status}</span>`:mk(mstat(seg.s,seg.f,today));
       return `<div class="dr"><span class="l">${PLAN.cardLabel[m]}</span><span class="r">${rng}${mkr}</span></div>`;}).join("");
-    const extra = ph===1 ? `<div class="dr golive1"><span class="l">JULY 28 · GO LIVE · 335 AGENTS!</span><span class="r"><span class="gpill1">● GREEN</span></span></div>` : "";
+    const extra = ph===1 ? `<div class="dr golive1"><span class="l">JULY 28 · GO LIVE · 335 AGENTS!</span><span class="r"><span class="gpill1">● GREEN</span></span></div>`
+      : ph===2 ? `<div class="dr golive1" style="background:var(--amberbg)"><span class="l" style="color:#9a6b12">AUG 18 · GO LIVE · 525 AGENTS (TBC)</span><span class="r"><span class="gpill1" style="background:var(--amber)">TBC</span></span></div>`
+      : "";
     return `<div class="card c"><div class="ph1">Phase ${ph}</div><div><span class="badge">GO LIVE</span></div><div class="big">${gld}</div><div class="out">${flowsBy[ph]} flows · ${days} days out</div><div class="lobs">${PLAN.lobs[ph]}</div>${rows}${extra}</div>`;
   }).join("");
 
