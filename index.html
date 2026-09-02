@@ -221,7 +221,7 @@
       </div>
       <div id="gantt"></div>
       <div class="gaxis" id="gaxis"></div>
-      <div class="gnote">All go-lives are overnight deploys · P1 hypercare ended Aug 11 · P2 hypercare ends Aug 31 · P3 go-live Sep 17 (moved from Sep 14), hypercare Sep 18 – Oct 1 · Genesys decommission Sep 22 — only 5 days between go-live and decommission, and hypercare runs 9 days beyond it</div>
+      <div class="gnote">All go-lives are overnight deploys · P1 hypercare ended Aug 11 · P2 hypercare ends Aug 31 · P3 go-live Sep 17, hypercare Sep 18 – Oct 1 · Genesys decommission Sep 22 — only 5 days between go-live and decommission, and hypercare runs 9 days beyond it</div>
     </div>
     <div class="pc" id="datecards"></div>
   </div>
@@ -252,15 +252,16 @@ const CONFIG = {
 const gviz=(id,tab)=>`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
 
 const DEFAULTS={
-  manual:{data_as_of:"August 28, 2026",overall_pct:88,overall_complete:191,overall_inprogress:38,overall_notstarted:52,ws2_pct:90,ws3_pct:72,ws4_pct:92},
-  // Flow counts: Unified Call Flow Tracker → Dashboard tab, pulled 28 Aug 2026 (Friday weekly refresh).
+  manual:{data_as_of:"2 Sep 2026",overall_pct:88,overall_complete:191,overall_inprogress:38,overall_notstarted:52,ws2_pct:90,ws3_pct:72,ws4_pct:92},
+  // Flow counts: Unified Call Flow Tracker → Dashboard tab, pulled 2 Sep 2026.
   // Phase 3 is shown ALL-IN (41) — the 9 RL routing-logic flows are folded into the phase
   // totals rather than carved out into a separate footnote (rl:null disables that footnote).
   tracker:{totals:{all:81,p1:15,p2:25,p3:41},p1:{built:15,pendingUAT:0},p2:{built:25,clearedUAT:0,buildInProgress:0,pendingUAT:0,dfcx:0},
-    // 28 Aug: Phase 3 build kept advancing — built 28 → 32 (78% of 41), in build 12 → 8. One flow
-    // (Qualfon_Migration_Brspd_1, the last Large build) still awaiting Brightspeed sign-off. The
-    // approved queue (clearedUAT / "Pending Production Build") is still 0 — no buffer of released work.
-    p3:{built:32,clearedUAT:0,buildInProgress:8,awaitingApproval:1,inSIT:0,pendingSITbuild:0,toDeliver:0,uatFailed:0,dfcx:0,inReview:0,
+    // 2 Sep: Phase 3 build kept advancing — built 32 → 34 (83% of 41), in build 8 → 7. The held flow
+    // (Qualfon_Migration_Brspd_1, the last Large build) has been approved and built, so the
+    // awaitingApproval bucket is now 0 and hides. The approved queue (clearedUAT / "Pending
+    // Production Build") is still 0 — no buffer of released work.
+    p3:{built:34,clearedUAT:0,buildInProgress:7,awaitingApproval:0,inSIT:0,pendingSITbuild:0,toDeliver:0,uatFailed:0,dfcx:0,inReview:0,
       sitFlows:[]},
     rl:null},
   wshealth:[{ws:"ws3",item:"Late engagement by the Business owners — issues in structure / flows surfacing at UAT/ORT",status:"New",category:"Risk",jira:""}],
@@ -278,7 +279,7 @@ const DEFAULTS={
   ],
   // MANUAL weekly line items — typed in by hand, NOT from the tracker or Smartsheet.
   // Rendered at the foot of that phase's Next Steps column. Review/clear these every week.
-  manualNotes:{3:[{item:"Re-structure of queues — on target for completion Aug 31",status:"In Progress"}]},
+  manualNotes:{3:[{item:"Re-structure of queues",status:"Complete"}]},
   statusdeck:[
     {section:"attention",category:"Issue",item:"Design restructure — business sign-off at risk for Phase 3",status:"Open",date:"",mitigation:"Mitigation: Agent Transfer Process redesign reviewed and agreed with the business; scoped to Phase 4 as it cannot be delivered within Phase 3. Phase 3 go-live re-timed accordingly, held inside the Sep 22 decommission.",jira:"",owner:""},
     {section:"attention",category:"Risk",item:"Late engagement by the Business owners — issues in structure / signed-off flows surfacing at UAT/ORT",status:"Open",date:"",mitigation:"Mitigation: Continue as designed and approved; circle back at a later date to review concerns.",jira:"",owner:"Onix Programme"},
@@ -373,7 +374,7 @@ function render(m,t,deck,health,plan,nextsteps){
   const ragTxt=w=>rag(w)==="amber"?"Amber":"Green";
 
   // exec summary
-  document.getElementById("exec").innerHTML=`The Brightspeed CCaaS migration program is <b>${m.overall_pct}% complete</b>, tracking to Genesys decommission on <b>September 22, 2026</b>. Delivery spans three workstreams — <b>CCaaS Migration</b> (${m.ws3_pct}%), <b>Aspect WFM Integration</b> (${m.ws4_pct}%), and <b>Business Readiness &amp; Training</b> (${m.ws2_pct}%) — each tracked independently for executive visibility. <b>${t.totals.all} call flows</b> are phasing to go-live on <span class="g">July 28</span>, <span class="g">August 18</span>, and <span class="g">September 17</span> (Phases 1 &amp; 2 live; Phase 3 build 32 of 41, go-live five days ahead of the Sep 22 decommission). ${amberNote(H)}`;
+  document.getElementById("exec").innerHTML=`The Brightspeed CCaaS migration program is <b>${m.overall_pct}% complete</b>, tracking to Genesys decommission on <b>September 22, 2026</b>. Delivery spans three workstreams — <b>CCaaS Migration</b> (${m.ws3_pct}%), <b>Aspect WFM Integration</b> (${m.ws4_pct}%), and <b>Business Readiness &amp; Training</b> (${m.ws2_pct}%) — each tracked independently for executive visibility. <b>${t.totals.all} call flows</b> are phasing to go-live on <span class="g">July 28</span>, <span class="g">August 18</span>, and <span class="g">September 17</span> (Phases 1 &amp; 2 live; Phase 3 build ${t.p3.built} of ${t.totals.p3}, go-live five days ahead of the Sep 22 decommission). ${amberNote(H)}`;
 
   // program health
   const phCards=[["Overall Program","overall"],["CCaaS Migration","ws3"],["WFM Implementation","ws4"],["Bus Readiness & Training","ws2"]];
@@ -439,7 +440,7 @@ function render(m,t,deck,health,plan,nextsteps){
   const cf=[
     {ph:"Phase 1",flows:t.totals.p1,gl:"Go Live Jul 28",delta:"▲ Live since Jul 28 — all 15 flows in production; hypercare ended Aug 11",stg:p1stg},
     {ph:"Phase 2",flows:t.totals.p2,gl:"Go Live Aug 18",delta:"▲ Live since Aug 18 — all 25 flows in production; hypercare to Aug 31",stg:p2stg},
-    {ph:"Phase 3",flows:t.totals.p3,gl:"Go Live Sep 17",delta:"▲ 41 flows all-in (incl. 9 RL routing-logic) · 32 built (+4, 78%) · 8 in build · 1 awaiting Brightspeed approval (Qualfon_Migration_Brspd_1, the last Large build) — build running ahead of the required pace, go-live Sep 17 on track",stg:p3stg,rl:t.rl,sit:t.p3.sitFlows}
+    {ph:"Phase 3",flows:t.totals.p3,gl:"Go Live Sep 17",delta:"▲ 41 flows all-in (incl. 9 RL routing-logic) · 34 built (+2, 83%) · 7 in build · none awaiting Brightspeed approval — build running ahead of the required pace, go-live Sep 17 on track",stg:p3stg,rl:t.rl,sit:t.p3.sitFlows}
   ];
   document.getElementById("cf").innerHTML=cf.map(c=>`<div class="card c"><div class="ph1" style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>${c.ph} · ${c.flows} flows</span>${c.status==='at-risk'?`<span class="gpill1" style="background:var(--amber);font-size:9.5px;padding:1px 8px;letter-spacing:.02em">● AMBER · AT RISK</span>`:''}</div><div class="gl">${c.gl}</div>
     ${c.delta?`<div style="font-size:11px;font-weight:800;color:#177049;background:#EAF7EF;border-radius:6px;padding:5px 9px;margin:-8px 0 12px;letter-spacing:.2px">${c.delta}</div>`:""}
